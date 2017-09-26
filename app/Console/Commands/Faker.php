@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\User;
 use Illuminate\Console\Command;
-use Faker\Factory as Faker;
+use Faker\Factory;
 
-class Fake extends Command {
+class Faker extends Command {
     /**
      * The name and signature of the console command.
      *
@@ -55,7 +55,7 @@ class Fake extends Command {
      * 利用 Faker 製作假資料
      */
     private function fakeData() {
-        $faker = Faker::create();
+        $faker = Factory::create();
 
         foreach (range(1, 100) as $num) {
             $this->user->create([

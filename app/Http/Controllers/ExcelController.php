@@ -14,33 +14,29 @@ class ExcelController extends Controller
         $this->user = $user;
     }
 
-    public function export(){
+    /**
+     * 匯出檔案
+     */
+    public function export() {
         $users = $this->user->all();
-        $cell_title = ['姓名','信箱'];
-        $cellData = array();
-        $cellData = array($cell_title);
-        foreach ($users as $user => $info){
-            $cellData = array( $user => [$info->name, $info->email]);
+        $filename = "使用者資料";
+        $cellTitle = ['姓名', '信箱'];
+        $cellData = array($cellTitle);
+        foreach ($users as $key => $info) {
+            $cellData[$key + 1] = [$info->name, $info->email];
         }
-        dd($cellData);
 
-        Excel::create('使用者資料',function($excel) use ($cellData) {
-            $excel->sheet('score', function($sheet) use ($cellData){
+        Excel::create($filename, function ($excel) use ($cellData) {
+            $tabName = date("Y-m-d");
+            $excel->sheet($tabName, function ($sheet) use ($cellData) {
                 $sheet->rows($cellData);
+
+                //設定標題列樣式
+                $sheet->row(1, function ($row) {
+                    $row->setBackground('#fdcaa0');
+                    $row->setFont(array('family' => 'Calibri', 'size' => '12', 'bold' => true));
+                });
             });
-        })->export('xls');
-//        $cellData = [
-//            ['学号','姓名','成绩'],
-//            ['10001','AAAAA','99'],
-//            ['10002','BBBBB','92'],
-//            ['10003','CCCCC','95'],
-//            ['10004','DDDDD','89'],
-//            ['10005','EEEEE','96'],
-//        ];
-//        Excel::create('学生成绩',function($excel) use ($cellData){
-//            $excel->sheet('score', function($sheet) use ($cellData){
-//                $sheet->rows($cellData);
-//            });
-//        })->export('xls');
+        })->export('xlsx');
     }
 }
